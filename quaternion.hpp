@@ -3,6 +3,7 @@
 
 #include <complex>
 #include <type_traits>
+#include <ostream>
 
 namespace i14extra{
 
@@ -135,36 +136,86 @@ public:
     ///MULT-ASSIGN
     template<typename U>
     quaternion_t<T>& operator*=(const quaternion_t<U>& other){
-        r()*=other.r();
-        ri()*=other.ri();
-        rj()*=other.rj();
-        rk()*=other.rk();
-        return *this;
+        quaternion_t<T> temp0(r()*other.r(),
+                              ri()*other.r(),
+                              rj()*other.r(),
+                              rk()*other.r()),
+                        temp1(-ri()*other.ri(),
+                              r()*other.ri(),
+                              -rk()*other.ri(),
+                              rj()*other.ri()),
+                        temp2(-rj()*other.rj(),
+                              rk()*other.rj(),
+                              r()*other.rj(),
+                              -ri()*other.rj()),
+                        temp3(-rk()*other.rk(),
+                              -rj()*other.rk(),
+                              ri()*other.rk(),
+                              r()*other.rk());
+        temp0+=temp1+=temp2+=temp3;
+        return *this=temp0;
     }
     quaternion_t<T>& operator*=(const T& other){
         r()*=other;
+        ri()*=other;
+        rj()*=other;
+        rk()*=other;
         return *this;
     }
     template<typename U>
     quaternion_t<T>& operator*=(const std::complex<U>& other){
-        return *this*=*new quaternion_t<U>(other);
+        quaternion_t<T> temp0(r()*other.real,
+                              ri()*other.real,
+                              rj()*other.real,
+                              rk()*other.real),
+                        temp1(-ri()*other.imag,
+                              r()*other.imag,
+                              -rk()*other.imag,
+                              rj()*other.imag);
+        temp0+=temp1;
+        return *this=temp0;
     }
     ///DIV-ASSIGN
     template<typename U>
     quaternion_t<T>& operator/=(const quaternion_t<U>& other){
-        r()/=other.r();
-        ri()/=other.ri();
-        rj()/=other.rj();
-        rk()/=other.rk();
-        return *this;
+        quaternion_t<T> temp0(r()/other.r(),
+                              ri()/other.r(),
+                              rj()/other.r(),
+                              rk()/other.r()),
+                        temp1(-ri()/other.ri(),
+                              r()/other.ri(),
+                              -rk()/other.ri(),
+                              rj()/other.ri()),
+                        temp2(-rj()/other.rj(),
+                              rk()/other.rj(),
+                              r()/other.rj(),
+                              -ri()/other.rj()),
+                        temp3(-rk()/other.rk(),
+                              -rj()/other.rk(),
+                              ri()/other.rk(),
+                              r()/other.rk());
+        temp0+=temp1+=temp2+=temp3;
+        return *this=temp0;
     }
     quaternion_t<T>& operator/=(const T& other){
-        r()-=other;
+        r()/=other;
+        ri()/=other;
+        rj()/=other;
+        rk()/=other;
         return *this;
     }
     template<typename U>
     quaternion_t<T>& operator/=(const std::complex<U>& other){
-        return *this-=*new quaternion_t<U>(other);
+        quaternion_t<T> temp0(r()/other.real,
+                              ri()/other.real,
+                              rj()/other.real,
+                              rk()/other.real),
+                        temp1(-ri()/other.imag,
+                              r()/other.imag,
+                              -rk()/other.imag,
+                              rj()/other.imag);
+        temp0+=temp1;
+        return *this=temp0;
     }
 };
 template<typename T, typename U>
@@ -208,6 +259,10 @@ bool operator!=(const int& lhs, const quaternion_t<T>& rhs){
 template<typename T, typename U>
 bool operator!=(const std::complex<T>& lhs, const quaternion_t<U>& rhs){
     return !(rhs==lhs);
+}
+template<typename T>
+std::ostream& operator<<(std::ostream& lhs,const quaternion_t<T> rhs){
+    lhs<<"("<<rhs.r()<<", "<<rhs.ri()<<"i, "<<rhs.rj()<<"j, "<<rhs.rk()<<"k)";
 }
 
 }//namespace i14extra
