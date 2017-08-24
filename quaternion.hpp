@@ -218,6 +218,7 @@ public:
         return *this=temp0;
     }
 };
+///EQ
 template<typename T, typename U>
 bool operator==(const quaternion_t<T>& lhs, const quaternion_t<U>& rhs){
     return lhs.r()==static_cast<T>(rhs.r())&&lhs.ri()==static_cast<T>(rhs.ri())&&
@@ -240,6 +241,7 @@ template<typename T, typename U>
 bool operator==(const std::complex<T>& lhs, const quaternion_t<U>& rhs){
     return rhs==lhs;
 }
+///UNEQ
 template<typename T, typename U>
 bool operator!=(const quaternion_t<T>& lhs,const quaternion_t<U>& rhs){
     return !(lhs==rhs);
@@ -263,6 +265,32 @@ bool operator!=(const std::complex<T>& lhs, const quaternion_t<U>& rhs){
 template<typename T>
 std::ostream& operator<<(std::ostream& lhs,const quaternion_t<T> rhs){
     lhs<<"("<<rhs.r()<<", "<<rhs.ri()<<"i, "<<rhs.rj()<<"j, "<<rhs.rk()<<"k)";
+}
+///OPERATOR PLUS
+template<typename T,typename U>
+quaternion_t<T> operator+(const quaternion_t<T>& lhs,const U& rhs){
+    static_assert(std::is_arithmetic<U>::value,
+                  "i14extra::quaternion_t operator+: U must be arithmetic");
+    quaternion_t<T> temp(lhs);
+    return temp+=rhs;
+}
+template<typename T,typename U> quaternion_t<T>
+operator+(const quaternion_t<T>& lhs,const std::complex<U>& rhs){
+    quaternion_t<T> temp(lhs);
+    return temp+=rhs;
+}
+template<typename T,typename U> quaternion_t<T>
+operator+(const quaternion_t<T>& lhs,const quaternion_t<U>& rhs){
+    quaternion_t<T> temp(lhs);
+    return temp+=rhs;
+}
+template<typename T,typename U> quaternion_t<T>
+operator+(const U& lhs,const quaternion_t<T> rhs){
+    return rhs+lhs;
+}
+template<typename T,typename U> quaternion_t<T>
+operator+(const std::complex<U>& lhs,const quaternion_t<T>& rhs){
+    return rhs+lhs;
 }
 
 }//namespace i14extra
