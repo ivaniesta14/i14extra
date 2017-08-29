@@ -1,5 +1,5 @@
-#ifndef I14EXTRA_QUATERNION
-#define I14EXTRA_QUATERNION
+#ifndef I14EXTRA_QUATERNION_HPP
+#define I14EXTRA_QUATERNION_HPP
 
 #include <complex>
 #include <type_traits>
@@ -291,4 +291,4 @@ operator+(const std::complex<U>& lhs,const quaternion_t<T>& rhs){
 
 }//namespace i14extra
 
-#endif //I14EXTRA_QUATERNION
+#endif //I14EXTRA_QUATERNION_HPP
