@@ -262,10 +262,6 @@ template<typename T, typename U>
 bool operator!=(const std::complex<T>& lhs, const quaternion_t<U>& rhs){
     return !(rhs==lhs);
 }
-template<typename T>
-std::ostream& operator<<(std::ostream& lhs,const quaternion_t<T> rhs){
-    lhs<<"("<<rhs.r()<<", "<<rhs.ri()<<"i, "<<rhs.rj()<<"j, "<<rhs.rk()<<"k)";
-}
 ///OPERATOR PLUS
 template<typename T,typename U>
 quaternion_t<T> operator+(const quaternion_t<T>& lhs,const U& rhs){
