@@ -15,7 +15,7 @@ public:
     typedef T value_type;
     constexpr point_t(const T& vx=*new T(),const T& vy=*new T(),
                       const T& vz=*new T()):
-        x(vx),y(vy),z(vz){}
+        x(static_cast<T>(vx)),y(static_cast<T>(vy)),z(static_cast<T>(vz)){}
     constexpr point_t(point_t& other):
         point_t(other.rx(),other.ry(),other.rz()){}
     template<typename U>
