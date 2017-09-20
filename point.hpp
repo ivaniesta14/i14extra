@@ -5,14 +5,15 @@
 #include <utility>
 #include <tuple>
 #include <type_traits>
+#include "i14extra/convenience.hpp"
 
 namespace i14extra {
 
 template <typename T>
 class point_t{
-    T x,y,z;
 public:
     typedef T value_type;
+    T x,y,z;
     constexpr point_t(const T& vx=*new T(),const T& vy=*new T(),
                       const T& vz=*new T()):
         x(static_cast<T>(vx)),y(static_cast<T>(vy)),z(static_cast<T>(vz)){}
@@ -29,33 +30,56 @@ public:
         static_cast<T>(std::get<U>(other)),
         static_cast<T>(std::get<V>(other)),
         static_cast<T>(std::get<W>(other))){}
-    inline T& rx(){return x;}
-    inline T& ry(){return y;}
-    inline T& rz(){return z;}
-    inline T& rx(T vx){x=vx;return x;}
-    inline T& ry(T vy){y=vy;return y;}
-    inline T& rz(T vz){z=vz;return z;}
     inline operator T(){return x;}
     inline operator std::complex<T>(){return *new std::complex<T>(x,y);}
     inline operator std::pair<T,T>(){return std::make_pair(x,y);}
     inline operator std::tuple<T,T,T>(){return std::make_tuple(x,y,z);}
     inline const point_t<T>& operator=(const point_t<T>& rhs){
-        rx(rhs.rx());ry(rhs.ry());rz(rhs.rz()); return *this;
+        x=rhs.rx();
+        y=rhs.ry();
+        z=rhs.rz();
+        return *this;
     }
     inline const point_t<T>& operator=(const T& rhs){
-        rx()=rhs; ry()=0; rz()=0; return *this;
+        x=rhs;
+        y=0;
+        z=0;
+        return *this;
     }
     inline const point_t<T>& operator=(const std::complex<T>& rhs){
-        rx()=rhs.real();ry()=rhs.imag();rz()=0; return *this;
+        x=rhs.real();
+        y=rhs.imag();
+        z=0;
+        return *this;
     }
     inline const point_t<T>& operator=(const std::pair<T,T>& rhs){
-        rx()=rhs.first;ry()=rhs.second;rz()=0; return *this;
+        x=rhs.first;
+        y=rhs.second;
+        z=0;
+        return *this;
     }
     inline const point_t<T>& operator=(const std::tuple<T,T,T>& rhs){
-        rx(std::get<0>(rhs)); ry(std::get<1>(rhs));
-        rz(std::get<2>(rhs)); return *this;
+        x=std::get<0>(rhs);
+        y=std::get<1>(rhs);
+        z=std::get<2>(rhs);
+        return *this;
     }
 };
+
+typedef point_t<char> cpoint;
+typedef point_t<schar> scpoint;
+typedef point_t<uchar> ucpoint;
+typedef point_t<sshort> spoint;
+typedef point_t<ushort> uspoint;
+typedef point_t<sint> point;
+typedef point_t<uint> upoint;
+typedef point_t<slong> lpoint;
+typedef point_t<ulong> ulpoint;
+typedef point_t<sllong> llpoint;
+typedef point_t<ullong> ullpoint;
+typedef point_t<float> fpoint,pointf;
+typedef point_t<double> dpoint,pointd;
+typedef point_t<ldouble> ldpoint, pointdl;
 
 }
 
