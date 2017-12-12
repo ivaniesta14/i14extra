@@ -18,7 +18,7 @@ public:
                       const T& vz=*new T()):
         x(static_cast<T>(vx)),y(static_cast<T>(vy)),z(static_cast<T>(vz)){}
     constexpr point_t(point_t& other):
-        point_t(other.rx(),other.ry(),other.rz()){}
+        point_t(other.x,other.y,other.z){}
     template<typename U>
     constexpr point_t(const std::complex<U>& other):
         point_t(static_cast<T>(other.real()),static_cast<T>(other.imag())){}
@@ -35,9 +35,9 @@ public:
     inline operator std::pair<T,T>(){return std::make_pair(x,y);}
     inline operator std::tuple<T,T,T>(){return std::make_tuple(x,y,z);}
     inline const point_t<T>& operator=(const point_t<T>& rhs){
-        x=rhs.rx();
-        y=rhs.ry();
-        z=rhs.rz();
+        x=rhs.x;
+        y=rhs.y;
+        z=rhs.z;
         return *this;
     }
     inline const point_t<T>& operator=(const T& rhs){
