@@ -81,8 +81,18 @@ template<typename T,typename U> constexpr bool neq(const T& lhs,const U& rhs){
     return lhs!=rhs;
 }
 
+#define ref &
+#define lref &
+#define cref const &
+#define cv const volatile
+
+#define I_AUTO_EQ(left,right)\
+    bool operator==(left cref lhs,right cref rhs){\
+        return lhs.operator==(rhs);\
+    }
+
 #define I_AUTO_NOT_EQ(left,right) \
-    bool operator!=(const left& lhs,const right& rhs){\
+    bool operator!=(left cref lhs,right cref rhs){\
         return !(lhs==rhs);\
     }
 #define I_AUTO_LT(left, right)\
@@ -96,16 +106,13 @@ template<typename T,typename U> constexpr bool neq(const T& lhs,const U& rhs){
     }
 #define I_AUTO_RT_EQ(left,right) I_AUTO_LT_EQ(right,left)
 
+#define i_eq(left,right) I_AUTO_EQ(left,right)
 #define i_not_eq(left,right) I_AUTO_NOT_EQ(left,right)
 #define i_lt(left, right) I_AUTO_LT(left,right)
 #define i_gt(left, right) I_AUTO_GT(left, right)
 #define i_lt_eq(left, right) I_AUTO_LT_EQ(left,right)
 #define i_gt_eq(left, right) I_AUTO_GT_EQ(left,right)
 
-#define ref &
-#define lref &
-#define cref const &
-#define cv const volatile
 
 #define I_AUTO_GETTER(type,from,name,Name)\
     type get##Name(){\

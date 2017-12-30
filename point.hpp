@@ -11,13 +11,15 @@ namespace i14extra {
 
 template <typename T>
 class point_t{
+    static_assert(std::is_arithmetic_v<T>,
+                  "i14extra::point<T>: T must be arithmetic");
 public:
     typedef T value_type;
     T x,y,z;
     constexpr point_t(const T& vx=*new T(),const T& vy=*new T(),
                       const T& vz=*new T()):
         x(static_cast<T>(vx)),y(static_cast<T>(vy)),z(static_cast<T>(vz)){}
-    constexpr point_t(point_t& other):
+    template<typename U>constexpr point_t(point_t<U> cref other):
         point_t(other.x,other.y,other.z){}
     template<typename U>
     constexpr point_t(const std::complex<U>& other):
@@ -30,10 +32,13 @@ public:
         static_cast<T>(std::get<U>(other)),
         static_cast<T>(std::get<V>(other)),
         static_cast<T>(std::get<W>(other))){}
-    inline operator T(){return x;}
-    inline operator std::complex<T>(){return *new std::complex<T>(x,y);}
-    inline operator std::pair<T,T>(){return std::make_pair(x,y);}
-    inline operator std::tuple<T,T,T>(){return std::make_tuple(x,y,z);}
+    explicit inline operator T(){return x;}
+    template<typename U=T> explicit
+    inline operator std::complex<U>(){return *new std::complex<U>(x,y);}
+    template<typename U=T,typename V=T> explicit
+    inline operator std::pair<U,V>(){return std::make_pair(x,y);}
+    template<typename U=T,typename V=T,typename W=T> explicit
+    inline operator std::tuple<U,V,W>(){return std::make_tuple(x,y,z);}
     inline const point_t<T>& operator=(const point_t<T>& rhs){
         x=rhs.x;
         y=rhs.y;
@@ -59,12 +64,48 @@ public:
         return *this;
     }
     inline const point_t<T>& operator=(const std::tuple<T,T,T>& rhs){
-        x=std::get<0>(rhs);
-        y=std::get<1>(rhs);
-        z=std::get<2>(rhs);
+        x=sget<0>(rhs);
+        y=sget<1>(rhs);
+        z=sget<2>(rhs);
         return *this;
     }
+
+    template<typename U>
+    inline constexpr bool operator==(point_t<U> cref rhs) const{
+        return (x==rhs.x)&&(y==rhs.y)&&(z==rhs.z);
+    }
+    template<typename U>
+    inline constexpr bool operator==(std::complex<U> cref rhs) const{
+        return (x==rhs.real())&&(y==rhs.imag())&&(z==*new value_type());
+    }
+    template<typename U>
+    inline constexpr bool operator==(U cref rhs) const{
+        return (U(x)==rhs)&&(y==*new value_type())&&(z==*new value_type());
+    }
 };
+
+template<typename T,typename U> inline constexpr i_eq(point_t<T>,point_t<U>)
+template<typename T,typename U> inline constexpr i_eq(point_t<T>,U)
+template<typename T,typename U> inline constexpr
+i_eq(point_t<T>,std::complex<U>)
+template<typename T,typename U> inline constexpr
+bool operator==(T cref lhs,point_t<U> cref rhs){
+    return rhs==lhs;
+}
+template<typename T,typename U> inline constexpr
+bool operator==(std::complex<T> lhs,point_t<U> rhs){
+    return rhs==lhs;
+}
+
+template<typename T, typename U> inline constexpr
+i_not_eq(point_t<T>,point_t<U>)
+template<typename T,typename U> inline constexpr i_not_eq(point_t<T>,U)
+template<typename T,typename U> inline constexpr i_not_eq(T,point_t<U>)
+template<typename T,typename U> inline constexpr
+i_not_eq(point_t<T>,std::complex<U>)
+template<typename T,typename U> inline constexpr
+i_not_eq(std::complex<U>,point_t<T>)
+
 
 typedef point_t<char> cpoint;
 typedef point_t<schar> scpoint;
