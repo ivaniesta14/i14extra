@@ -24,14 +24,17 @@ using ulong=::ulong;
 #define I_FWD_CLASS(c) QT_FORWARD_DECLARE_CLASS(c);
 #endif //QGLOBAL_H
 
+#define I_NO_COPY_CONS(c)\
+    c(const c& other)=delete
+#define nocopycon(c) I_NO_COPY_CONS(c)
 #define I_NO_COPY(c) \
-    c(const c& other)=delete;\
+    I_NO_COPY_CONS(c);\
     const c& operator=(const c& rhs)=delete
 #define nocopy(c) I_NO_COPY(c)
 
 #define I_NO_DEF_CONS(c) \
-    c()=delete;
-#define nodef(c) I_NO_DEF_CONS(c)
+    c()=delete
+#define nodefcon(c) I_NO_DEF_CONS(c)
 
 #define DELETED =delete
 #define deleted DELETED
@@ -127,9 +130,16 @@ template<typename T,typename U> constexpr bool neq(const T& lhs,const U& rhs){
     void set##Name(type cref val){\
         to.name=val;\
     }
+#define I_AUTO_BOOL_GETTER(type,from,name,Name)\
+    type is##Name(){\
+        return from.name;\
+    }
 #define getter(type,from,name,Name) I_AUTO_GETTER(type,from,name,Name)
 #define setter(type,to,name,Name) I_AUTO_SETTER(type,to,name,Name)
-#define void_setter(type,to,name,Name) I_AUTO_VOID_SETTER(type,to,name,Name)
+#define void_setter(type,to,name,Name)\
+    I_AUTO_VOID_SETTER(type,to,name,Name)
+#define bool_getter(type,from,name,Name)\
+    I_AUTO_BOOL_GETTER(type,to,name,Name)
 
 #define sget std::get
 
